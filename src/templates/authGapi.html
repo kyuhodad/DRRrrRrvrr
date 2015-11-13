@@ -1,0 +1,6 @@
+<div ng-hide="authVm.succeededAuth">
+  <label>{{ authVm.getTitle() }}</label>
+  <button class="btn btn-primary" ng-click="authVm.authorize()">
+    {{ authVm.getLabel() }}
+  </button>
+</div>

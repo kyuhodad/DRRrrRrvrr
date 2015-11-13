@@ -22,20 +22,67 @@ app.config(['$routeProvider', function ($routeProvider) {
 }]);
 
 // -----------------------------------------------------------------------------
-// "authConfig" service: Holding the CLIENT_ID & SCOPE to get authorized for
+// "authGapi" directive:
+//  This is a component to get the Google API authorization.
+//  Attributes:
+//    title: The description to show for the title
+//    label: The label on the button.
+//    success: Callback to call after getting authorized.
+// -----------------------------------------------------------------------------
+app.directive('authGapi', ['gapiAuthorize', 'gapiDrive', function (gapiAuthorize, gapiDrive){
+    return {
+      restrict: 'E',
+      controller: function ($scope) {
+        var authVm = this;
+        var scope = $scope;
+        authVm.succeededAuth = false;
+
+        authVm.authorize = function () {
+          gapiAuthorize.checkAuth ().then( function (isAuthorized) {
+            if (isAuthorized) {
+              authVm.succeededAuth = true;
+
+              gapiDrive.getFileList().then ( function (filelist) {
+                // Call the callback function.
+                if (scope.success) { scope.success(); }
+              });
+            } else {
+              authVm.succeededAuth = false;
+              alert('Fail to get the authorization. Try it later.')
+            }
+          });
+        };
+
+        var defaultTitle = "Get authorization for access to Drive API: ";
+        var defaultLabel = "Authorize";
+        authVm.getTitle = function () { return scope.title ? scope.title : defaultTitle; };
+        authVm.getLabel = function () { return scope.label ? scope.label : defaultLabel; };
+      },
+
+      controllerAs: "authVm",
+      scope: {
+          title: '@title',
+          label: '@label',
+          success: '&success' // callback from parent scope controller on success.
+      },
+      templateUrl: 'templates/authGapi.html'
+    };
+}]);
+
+// -----------------------------------------------------------------------------
+// "OAuthConfig" value: Holding the CLIENT_ID & SCOPE to get authorized for
 // Google Service.
 // -----------------------------------------------------------------------------
-app.service('authConfig', [ function () {
-  var svc = this;
-  svc.CLIENT_ID = '905693818138-c8q6jtqnq2isv36o0aeqbs92lk66d0m5.apps.googleusercontent.com';
-  svc.SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
-}]);
+app.value('OAuthConfig', {
+  CLIENT_ID: '905693818138-c8q6jtqnq2isv36o0aeqbs92lk66d0m5.apps.googleusercontent.com',
+  SCOPES: ['https://www.googleapis.com/auth/drive.readonly']
+});
 
 // -----------------------------------------------------------------------------
 // "gapiAuthorize" service:
 //  Service to check the autorization.
 // -----------------------------------------------------------------------------
-app.service('gapiAuthorize', ['authConfig', '$q', function (authConfig, $q) {
+app.service('gapiAuthorize', ['OAuthConfig', '$q', function (OAuthConfig, $q) {
   var svc = this;
   svc.authorized = false;
   /**
@@ -47,11 +94,11 @@ app.service('gapiAuthorize', ['authConfig', '$q', function (authConfig, $q) {
     var defer = $q.defer();
 
     if (svc.authorized) {
-      defer.resolve(svc.authorized)
+      defer.resolve(svc.authorized);
     } else {
       gapi.auth.authorize({
-          'client_id': authConfig.CLIENT_ID,
-          'scope': authConfig.SCOPES.join(' '),
+          'client_id': OAuthConfig.CLIENT_ID,
+          'scope': OAuthConfig.SCOPES.join(' '),
           'immediate': true
         }, function (authResult) {
           svc.authorized = (authResult && !authResult.error);
@@ -154,6 +201,7 @@ app.service('gapiDrive', ['gapiAuthorize', '$http', '$q', function (gapiAuthoriz
 }]);
 
 // -----------------------------------------------------------------------------
+// NOTE: My not needed.....
 // "authController" controller:
 //  Controller to get the authorization.
 // -----------------------------------------------------------------------------
@@ -166,22 +214,26 @@ app.controller('AuthController', ['gapiAuthorize', 'gapiDrive', '$location', '$i
       gapiAuthorize.checkAuth ().then( function (isAuthorized) {
         if (isAuthorized) {
           authVm.succeededAuth = true;
-          // If it is authorized, get the file list and show listView.
           gapiDrive.getFileList().then ( function (filelist) {
             if (filelist) {
               $location.path('/listView');
-              for (var i=0; i<filelist.length; i++) {
-                console.log('ID: ' + filelist[i].id);
-                console.log('Title: ' + filelist[i].title);
-              }
-            } else {
-              console.log('Empty File list');
             }
           });
         } else {
           authVm.succeededAuth = false;
         }
       });
+  };
+}]);
+
+// -----------------------------------------------------------------------------
+// "MoveToListViewController" controller:
+//  A wrapper controller to move to list view after getting authorized.
+// -----------------------------------------------------------------------------
+app.controller('MoveToListViewController', ['$location', function ($location) {
+  var moveToListVm = this;
+  moveToListVm.doIt = function () {
+    $location.path('/listView');
   };
 }]);
 
