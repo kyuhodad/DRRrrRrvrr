@@ -1,0 +1,9 @@
+<div ng-if="docVm.hasFileToShow()">
+  <p>
+    <button class="btn btn-primary" ng-click="docVm.doGoBackToListView()">Back to list</button>
+  </p>
+  <h3>{{ docVm.getFileName() }}</h3>
+  <p>
+    {{ docVm.fileData }}
+  </p>
+</div>

@@ -6,29 +6,40 @@ var Server = require('karma').Server;
 var jshint = require('gulp-jshint');
 var connect = require('gulp-connect');
 
+var distRoot = 'dist';
+var appRoot = 'src';
+var testRoot = 'src/tests';
+var libRoot = 'bower_components';
+
+var appJs = appRoot + '/js';
+var appCss = appRoot + '/css';
+
 // *******************************************
 
 gulp.task('buildApp', function(){
-  return gulp.src(['src/js/config.js', 'src/js/**/*.js'])
+  // return gulp.src(['src/js/config.js', 'src/js/**/*.js'])
+  return gulp.src([appJs + '/config.js', appJs + '/**/*.js'])
     .pipe(concat('app.js'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(gulp.dest('dist'))
     .pipe(connect.reload());
 });
 
 gulp.task('buildVendor', function(){
   return gulp.src([
-    'bower_components/jquery/dist/jquery.min.js',
-    'bower_components/**/*.min.js'])
+    libRoot + '/jquery/dist/jquery.min.js',
+    libRoot + '/angular/angular.min.js',
+    libRoot + '/**/*.min.js'])
     .pipe(concat('vendors.js'))
-    .pipe(uglify())
+    // .pipe(uglify())
     .pipe(gulp.dest('dist'));
 });
 
 gulp.task('buildCSS', function(){
   return gulp.src([
-    'bower_components/bootstrap/dist/css/bootstrap.css',
-    'src/css/**/*.css'])
+    libRoot + '/bootstrap/dist/css/bootstrap.css',
+    libRoot + '/angular/*.css',
+    appCss  + '/**/*.css'])
   .pipe(concat('styles.css'))
   .pipe(minifycss())
   .pipe(gulp.dest('dist'))
@@ -36,7 +47,7 @@ gulp.task('buildCSS', function(){
 });
 
 gulp.task('moveHTML', function(){
-  return gulp.src('src/**/*.html')
+  return gulp.src(appRoot + '/**/*.html')
     .pipe(gulp.dest('dist'))
     .pipe(connect.reload());
 });
@@ -53,7 +64,7 @@ gulp.task('karma', function (done) {
 });
 
 gulp.task('jshint', function(){
-  return gulp.src(['src/js/**/*.js', 'src/tests/**/*.js'])
+  return gulp.src([appJs + '/**/*.js', testRoot + '/**/*.js'])
     .pipe(jshint())
     .pipe(jshint.reporter('jshint-stylish'));
 });
@@ -70,9 +81,9 @@ gulp.task('connect', function(){
 });
 
 gulp.task('watch', function(){
-  gulp.watch('src/js/**/*.js', ['buildApp', 'test']);
-  gulp.watch('src/css/**/*.css', ['buildCSS']);
-  gulp.watch('src/**/*.html', ['moveHTML']);
+  gulp.watch(appJs   + '/**/*.js', ['buildApp', 'test']);
+  gulp.watch(appCss  + '/**/*.css', ['buildCSS']);
+  gulp.watch(appRoot + '/**/*.html', ['moveHTML']);
 });
 
 // *******************************************
