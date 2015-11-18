@@ -1,5 +1,21 @@
-<ul>
-  <li ng-repeat = "(index, file) in listVm.files">
-    <a class="file-link" ng-click="listVm.onSelectFile(index)">{{ file.title }}</a>
-  </li>
-</ul>
+<div class="row">
+
+  <div class = "col-md-6 well eng-area">
+    <h3>File List</h3>
+    <h4>(English)</h4>
+    <ul>
+      <li ng-repeat = "(index, file) in listVm.files">
+        <a class="file-link" ng-click="listVm.onSelectFile(index)">{{ file.title }}</a>
+      </li>
+    </ul>
+  </div>
+  <div class = "col-md-6 well zom-area">
+    <h3>File List</h3>
+    <h4>(Zombified)</h4>
+    <ul>
+      <li ng-repeat = "(index, title) in listVm.titlesInZombie">
+        <a class="file-link" ng-click="listVm.onSelectFile(index)">{{ title }}</a>
+      </li>
+    </ul>
+</div>
+</div>

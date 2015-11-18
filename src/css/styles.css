@@ -5,3 +5,11 @@
 .file-link {
   cursor: pointer;
 }
+
+.eng-area {
+  background-color: lightcyan;
+}
+
+.zom-area {
+  background-color: lavender;
+}

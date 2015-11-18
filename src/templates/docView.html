@@ -1,9 +1,20 @@
-<div ng-if="docVm.hasFileToShow()">
+<div class="row">
   <p>
     <button class="btn btn-primary" ng-click="docVm.doGoBackToListView()">Back to list</button>
   </p>
-  <h3>{{ docVm.getFileName() }}</h3>
-  <p>
-    {{ docVm.fileData }}
-  </p>
+  <div class="col-md-6 well eng-area" ng-if="docVm.hasFileToShow()">
+    <h3>{{ docVm.fileName }}</h3>
+    <h4>(English)</h4>
+    <p>
+      {{ docVm.fileData }}
+    </p>
+  </div>
+
+  <div class="col-md-6 well zom-area" ng-if="docVm.hasFileToShow()">
+    <h3>{{ docVm.fileNameInZombie }}</h3>
+    <h4>(Zombified)</h4>
+    <p>
+      {{ docVm.fileDataInZombie }}
+    </p>
+  </div>
 </div>
