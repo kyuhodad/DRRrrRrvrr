@@ -161,6 +161,7 @@ app.service('GoogleDriveService', ['OAuthService', '$http', '$q', function (OAut
   svc.currentFileId = undefined; // FileId
   svc.fileData = undefined;
   svc.fileDataHtml = undefined;
+  svc.splitFileData = undefined;
 
   svc.getCurrentFileName = function () {
     if (svc.currentFileIndex >= 0) {
@@ -221,6 +222,7 @@ app.service('GoogleDriveService', ['OAuthService', '$http', '$q', function (OAut
             }).then(function (fileResp) {
               svc.fileData = fileResp.data;
               svc.fileDataHtml = svc.fileData.replace(/\n/g, "<br>");
+              svc.splitFileData = svc.fileData.split(/\n/g);
               defer.resolve(svc.fileData);
             }, function () {
               svc.fileData = undefined;
@@ -261,27 +263,47 @@ app.service("ZTranslator", ['$http', '$q', function ($http, $q) {
       var prevWS = (strToSend.search(/^\s+/) >= 0) ? " " : "";
       var postWS = (strToSend.search(/\s+$/) >= 0) ? " " : "";
 
-      // Translate using zombify service.
-      $http.get(url, {data:{index:i, whitespaces:[prevWS, postWS]}}).then(function (resp) {
-        receivedStrings[resp.config.data.index] = resp.config.data.whitespaces[0] +
-                                                  resp.data.message +
-                                                  resp.config.data.whitespaces[1];
+      var trimmed = strToSend.trim();
+      if (trimmed.length > 0) {
+        // Translate using zombify service.
+        $http.get(url, {data:{index:i, whitespaces:[prevWS, postWS]}}).then(function (resp) {
+          receivedStrings[resp.config.data.index] = resp.config.data.whitespaces[0] +
+                                                    resp.data.message +
+                                                    resp.config.data.whitespaces[1];
+          countReceived++;
+          if (countReceived === numBlocks) {
+            // Now, all results have been receivec. Make a single string.
+            var outputStr = "";
+            for (var j=0; j<numBlocks; j++) {
+              if (receivedStrings[j]) {
+                outputStr += receivedStrings[j];
+              }
+            }
+
+            // Resolve it.
+            defer.resolve(outputStr);
+          }
+        }, function () {
+          // Error with undefined result
+          defer.resolve(undefined);
+        });
+      } else {
+        receivedStrings[i] = prevWS + postWS;
         countReceived++;
+
         if (countReceived === numBlocks) {
           // Now, all results have been receivec. Make a single string.
           var outputStr = "";
           for (var j=0; j<numBlocks; j++) {
-            if (receivedStrings[j])
+            if (receivedStrings[j]) {
               outputStr += receivedStrings[j];
+            }
           }
 
           // Resolve it.
           defer.resolve(outputStr);
         }
-      }, function () {
-        // Error with undefined result
-        defer.resolve(undefined);
-      });
+      }
     }
 
     return defer.promise;
@@ -307,7 +329,13 @@ app.controller('ListViewController', ['GoogleDriveService', 'ZTranslator', '$loc
   function (GoogleDriveService, ZTranslator, $location) {
     var listVm = this;
     listVm.files = GoogleDriveService.files;
+    listVm.viewTitle = "File List";
+    listVm.viewTitleInZombie = "File List";
     listVm.titlesInZombie = [];
+    ZTranslator.zombify (listVm.viewTitle).then (function (dataInZombie) {
+      listVm.viewTitleInZombie = dataInZombie;
+    });
+
     for (var i=0; i<listVm.files.length; i++) {
       ZTranslator.zombify (listVm.files[i].title).then (function (dataInZombie) {
         listVm.titlesInZombie.push(dataInZombie);
@@ -329,9 +357,12 @@ app.controller('DocViewController', ['GoogleDriveService', 'ZTranslator', '$loca
   function (GoogleDriveService, ZTranslator, $location, $scope) {
     var docVm = this;
     docVm.fileData = GoogleDriveService.fileData;
+    docVm.splitFileData = GoogleDriveService.splitFileData;
     docVm.fileName = GoogleDriveService.getCurrentFileName ();
+
     docVm.fileNameInZombie = undefined;
     docVm.fileDataInZombie = undefined;
+    docVm.splitFileDataInZombie = [];
 
     // Translate the file name
     ZTranslator.zombify (docVm.fileName).then (function (dataInZombie) {
@@ -342,6 +373,13 @@ app.controller('DocViewController', ['GoogleDriveService', 'ZTranslator', '$loca
     ZTranslator.zombify (docVm.fileData).then (function (dataInZombie) {
       docVm.fileDataInZombie = dataInZombie;
     });
+
+    // Translate the document content
+    for (var i=0; i<docVm.splitFileData.length; i++) {
+      ZTranslator.zombify (docVm.splitFileData[i]).then (function (dataInZombie) {
+        docVm.splitFileDataInZombie.push(dataInZombie);
+      });
+    }
 
     docVm.doGoBackToListView = function () {
       $location.path('/list');
