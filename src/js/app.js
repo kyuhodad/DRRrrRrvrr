@@ -42,5 +42,6 @@ app.run(['OAuthService', 'GoogleDriveService', '$interval', '$location',
           $location.path('/list');
         });
       }
-  });
-}]);
+    });
+  }
+]);

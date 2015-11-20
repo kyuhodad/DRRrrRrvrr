@@ -2,7 +2,7 @@ angular.module('DRRrrRrvrr')
 .service("ZTranslator", ['$http', '$q', function ($http, $q) {
   var svc = this;
 
-  svc.zombify = function (inputStr) {
+  svc.zombify = function (inputStr, id) {
     var defer = $q.defer();
 
     var baseUrl = "http://ancient-anchorage-9224.herokuapp.com/zombify?q=";
@@ -25,9 +25,19 @@ angular.module('DRRrrRrvrr')
       var prevWS = (strToSend.search(/^\s+/) >= 0) ? " " : "";
       var postWS = (strToSend.search(/\s+$/) >= 0) ? " " : "";
 
-      // Translate a string by using zombify service.
-      $http.get(url, { data: {index:i, whitespaces:[prevWS, postWS]} })
-           .then(successHttpGet, failHttpGet);
+      var trimmed = strToSend.trim();
+      if (trimmed.length > 0) {
+        // Translate a string by using zombify service.
+        $http.get(url, { data: {index:i, whitespaces:[prevWS, postWS]} })
+             .then(successHttpGet, failHttpGet);
+      } else {
+        receivedStrings[i] = prevWS + postWS;
+
+        countReceived++;
+        if (countReceived === numBlocks) {
+          mergeAndResolve ();
+        }
+      }
     }
 
     // Success callback
@@ -37,15 +47,7 @@ angular.module('DRRrrRrvrr')
                                                 resp.config.data.whitespaces[1];
       countReceived++;
       if (countReceived === numBlocks) {
-        // Now, all results have been receivec. Make a single string.
-        var outputStr = "";
-        for (var j=0; j<numBlocks; j++) {
-          if (receivedStrings[j]) {
-            outputStr += receivedStrings[j];
-          }
-        }
-        // Resolve it.
-        defer.resolve(outputStr);
+        mergeAndResolve ();
       }
     }
 
@@ -53,7 +55,19 @@ angular.module('DRRrrRrvrr')
     function failHttpGet () {
       // Error with undefined result
       hasFailed = true;
-      defer.resolve(undefined);
+      defer.resolve({ result: "", index: id });
+    }
+
+    function mergeAndResolve () {
+      // Make a single string and resolve it.
+      var outputStr = "";
+      for (var j=0; j<numBlocks; j++) {
+        if (receivedStrings[j]) {
+          outputStr += receivedStrings[j];
+        }
+      }
+      // Resolve it.
+      defer.resolve({ result: outputStr, index: id });
     }
 
     return defer.promise;

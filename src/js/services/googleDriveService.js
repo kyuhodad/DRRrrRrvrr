@@ -10,6 +10,8 @@ angular.module('DRRrrRrvrr')
   svc.currentFileIndex = -1; // Index of svc.files array
   svc.currentFileId = undefined; // FileId
   svc.fileData = undefined;
+  svc.fileDataHtml = undefined;
+  svc.splitFileData = undefined;
 
   // Get the file name which document view is showing.
   svc.getCurrentFileName = function () {
@@ -86,6 +88,7 @@ angular.module('DRRrrRrvrr')
               headers: { 'Authorization': "Bearer "+accessToken }
             }).then(function (fileResp) {
               svc.fileData = fileResp.data;
+              svc.splitFileData = svc.fileData.split(/\n/g);
               defer.resolve(svc.fileData);
             }, function () {
               svc.fileData = undefined;

@@ -5,16 +5,22 @@
   <div class="col-md-6 well eng-area" ng-if="docVm.hasFileToShow()">
     <h3>{{ docVm.fileName }}</h3>
     <h4>(English)</h4>
-    <p>
+    <!-- <p>
       {{ docVm.fileData }}
+    </p> -->
+    <p ng-repeat="fileData in docVm.splitFileData track by $index">
+      {{ fileData }}
     </p>
   </div>
 
   <div class="col-md-6 well zom-area" ng-if="docVm.hasFileToShow()">
     <h3>{{ docVm.fileNameInZombie }}</h3>
     <h4>(Zombified)</h4>
-    <p>
+    <!-- <p>
       {{ docVm.fileDataInZombie }}
+    </p> -->
+    <p ng-repeat="fileData in docVm.splitFileDataInZombie track by $index">
+      {{ fileData }}
     </p>
   </div>
 </div>
