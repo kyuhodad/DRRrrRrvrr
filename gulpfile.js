@@ -84,6 +84,7 @@ gulp.task('watch', function(){
   gulp.watch(appJs   + '/**/*.js', ['buildApp', 'test']);
   gulp.watch(appCss  + '/**/*.css', ['buildCSS']);
   gulp.watch(appRoot + '/**/*.html', ['moveHTML']);
+  gulp.watch(testRoot + '/**/*.js', ['test']);
 });
 
 // *******************************************

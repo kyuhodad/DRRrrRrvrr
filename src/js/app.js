@@ -31,17 +31,21 @@ app.config(['$routeProvider', function ($routeProvider) {
 //  2. Try to get authorization ( maximum try 4 times with 2sec delay )
 //  3. If successfully getting authorized, set the current path to '/list'.
 //
-app.run(['OAuthService', 'GoogleDriveService', '$interval', '$location',
+app
+.run(['runAuthorization', function (runAuthorization) {
+    runAuthorization.run();
+  }])
+.service('runAuthorization', ['OAuthService', 'GoogleDriveService', '$interval', '$location',
   function (OAuthService, GoogleDriveService, $interval, $location) {
-    // '/auth' is the first view.
-    $location.path('/auth');
-
-    OAuthService.checkAuth(4, 2000).then (function (isAuthorized) {
-      if (isAuthorized) {
-        GoogleDriveService.getFileList().then ( function () {
-          $location.path('/list');
-        });
-      }
-    });
-  }
-]);
+    this.run = function () {
+      // '/auth' is the first view.
+      $location.path('/auth');
+      OAuthService.checkAuth(4, 2000).then (function (isAuthorized) {
+        if (isAuthorized) {
+          GoogleDriveService.getFileList().then ( function () {
+            $location.path('/list');
+          });
+        }
+      });
+    };
+}]);

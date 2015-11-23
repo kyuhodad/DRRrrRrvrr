@@ -10,7 +10,6 @@ angular.module('DRRrrRrvrr')
   svc.currentFileIndex = -1; // Index of svc.files array
   svc.currentFileId = undefined; // FileId
   svc.fileData = undefined;
-  svc.fileDataHtml = undefined;
   svc.splitFileData = undefined;
 
   // Get the file name which document view is showing.
@@ -66,7 +65,7 @@ angular.module('DRRrrRrvrr')
     var defer = $q.defer();
 
     if (index < 0 || index >= svc.files.length) {
-      defer.reject ('File list is not updated.');
+      defer.reject ('Invalid file index or it has not updated file list.');
       return defer.promise;
     }
 
@@ -76,23 +75,23 @@ angular.module('DRRrrRrvrr')
     OAuthService.checkAuth ().then( function (hasAuthirized) {
       if (hasAuthirized) {
         gapi.client.load('drive', 'v2', function () {
-        svc.currentFileId = fileId;
+          svc.currentFileId = fileId;
 
-        // fileId = window.location.hash.substring(1);
-        var request = gapi.client.drive.files.get({fileId: fileId});
+          var request = gapi.client.drive.files.get({fileId: fileId});
 
-        request.execute(function(resp) {
-          var accessToken = gapi.auth.getToken().access_token;
-          $http.get(
-            resp.exportLinks["text/plain"], {
-              headers: { 'Authorization': "Bearer "+accessToken }
-            }).then(function (fileResp) {
-              svc.fileData = fileResp.data;
-              svc.splitFileData = svc.fileData.split(/\n/g);
-              defer.resolve(svc.fileData);
-            }, function () {
-              svc.fileData = undefined;
-              defer.resolve(svc.fileData);
+          request.execute(function(resp) {
+            var accessToken = gapi.auth.getToken().access_token;
+            $http.get(
+              resp.exportLinks["text/plain"], {
+                headers: { 'Authorization': "Bearer "+accessToken }
+              }).then(function (fileResp) {
+                svc.fileData = fileResp.data;
+                svc.splitFileData = svc.fileData.split(/\n/g);
+                defer.resolve(svc.fileData);
+              }, function () {
+                svc.fileData = undefined;
+                svc.splitFileData = undefined;
+                defer.resolve(svc.fileData);
             });
           });
         });

@@ -36,7 +36,7 @@ angular.module('DRRrrRrvrr')
 
       var checkProcess = $interval(function () {
         count++;
-        if (count >= maxNumOfTries) {
+        if (count > maxNumOfTries) {
           $interval.cancel(checkProcess);
           svc.status = -2;
           defer.resolve(svc.authorized);
