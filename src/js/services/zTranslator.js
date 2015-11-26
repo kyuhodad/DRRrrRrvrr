@@ -13,7 +13,7 @@ angular.module('DRRrrRrvrr')
     // Request translation with blocked data since the service has input size limit.
     var blockSize = 1024;
     var numBlocks = Math.ceil (trimedInputStr.length / blockSize);
-    if (numBlocks == 0) {
+    if (numBlocks === 0) {
       failHttpGet ();
     } else {
       var receivedStrings = [];

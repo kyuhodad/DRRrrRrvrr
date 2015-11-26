@@ -7,6 +7,12 @@ module.exports = function(config) {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
 
+    plugins: [
+      require('./node_modules/karma-jasmine'),
+      require('./node_modules/karma-ng-html2js-preprocessor'),
+      require('./node_modules/karma-phantomjs-launcher'),
+      require('./node_modules/karma-chrome-launcher')
+    ],
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -21,9 +27,9 @@ module.exports = function(config) {
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/bootstrap/dist/js/bootstrap.min.js',
       'src/js/**/*.js',
+      'src/templates/*.html',
       'src/tests/**/*.js'
     ],
-
 
     // list of files to exclude
     exclude: [
@@ -33,8 +39,13 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+      'src/templates/*.html': ['ng-html2js']
     },
 
+    ngHtml2JsPreprocessor: {
+      moduleName: 'templates',
+      stripPrefix: 'src/'
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

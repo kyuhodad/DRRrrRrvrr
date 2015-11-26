@@ -41,7 +41,7 @@ describe('GoogleDriveService', function(){
         var svc = this;
 
         var fileListAPI = {
-          list: function(option) { return mockFilesListFn; },
+          list: function() { return mockFilesListFn; },
           get:  function(option) { mockFilesGetFn.option = option; return mockFilesGetFn; }
         };
 
@@ -123,7 +123,7 @@ describe('GoogleDriveService', function(){
       spyOn(gapiMock.client.drive.files, "list").and.callThrough();
       spyOn(mockFilesListFn, "execute").and.callThrough();
 
-      GoogleDriveService.getFileList().then (function (fileList) {
+      GoogleDriveService.getFileList().then (function () {
         expect(gapiMock.client.load).toHaveBeenCalled();
         expect(gapiMock.client.drive.files.list).toHaveBeenCalled();
         expect(mockFilesListFn.execute).toHaveBeenCalled();
@@ -144,7 +144,7 @@ describe('GoogleDriveService', function(){
       spyOn(gapiMock.client, "load").and.callThrough();
       spyOn(gapiMock.client.drive.files, "list").and.callThrough();
 
-      GoogleDriveService.getFileList().then (function (fileList) {
+      GoogleDriveService.getFileList().then (function () {
         // Should not be here....
         expect(true).toBe(false);
       }, function (reason) {
@@ -164,7 +164,7 @@ describe('GoogleDriveService', function(){
       spyOn(mockFilesGetFn, "execute").and.callThrough();
 
       var fileIdx = 0;
-      GoogleDriveService.getFileList().then (function (items) {
+      GoogleDriveService.getFileList().then (function () {
         gapiMock.client.load.calls.reset();
         gapiMock.client.drive.files.get.calls.reset();
         mockFilesGetFn.execute.calls.reset();
@@ -173,7 +173,7 @@ describe('GoogleDriveService', function(){
         // Register expectation of $http with 'GET' and specified URL
         $httpBackend.expect("GET", mockURL+fileIdx);
 
-        GoogleDriveService.getFile(fileIdx).then (function (data) {
+        GoogleDriveService.getFile(fileIdx).then (function () {
           expect(gapiMock.client.load).toHaveBeenCalled();
           expect(gapiMock.client.drive.files.get).toHaveBeenCalled();
           expect(mockFilesGetFn.execute).toHaveBeenCalled();
@@ -186,7 +186,7 @@ describe('GoogleDriveService', function(){
 
     it("should get file data by getFile function.", function(){
       var fileIdx = 1;
-      GoogleDriveService.getFileList().then (function (items) {
+      GoogleDriveService.getFileList().then (function () {
         GoogleDriveService.getFile(fileIdx).then (function (data) {
           expect(data).toEqual(mockFileData[fileIdx]);
 
@@ -201,8 +201,8 @@ describe('GoogleDriveService', function(){
 
     it("should split file data at new lines and save them in splitFileData.", function(){
       var fileIdx = 2;
-      GoogleDriveService.getFileList().then (function (items) {
-        GoogleDriveService.getFile(fileIdx).then (function (data) {
+      GoogleDriveService.getFileList().then (function () {
+        GoogleDriveService.getFile(fileIdx).then (function () {
           var splitData = mockFileData[fileIdx].split('\n');
           expect(GoogleDriveService.splitFileData.length).toBe(splitData.length);
           expect(GoogleDriveService.splitFileData[0]).toMatch(splitData[0]);
@@ -214,7 +214,7 @@ describe('GoogleDriveService', function(){
 
     it("should fail if the file list is not updated.", function(){
       var fileIdx = 0;
-      GoogleDriveService.getFile(fileIdx).then (function (data) {
+      GoogleDriveService.getFile(fileIdx).then (function () {
         // Should not be here...
         expect(false).toBe(true);
       }, function (reason) {
@@ -224,8 +224,8 @@ describe('GoogleDriveService', function(){
 
     it("should fail if the file index is invalid.", function(){
       var fileIdx = 10;
-      GoogleDriveService.getFileList().then (function (items) {
-        GoogleDriveService.getFile(fileIdx).then (function (data) {
+      GoogleDriveService.getFileList().then (function () {
+        GoogleDriveService.getFile(fileIdx).then (function () {
           // Should not be here...
           expect(false).toBe(true);
         }, function (reason) {

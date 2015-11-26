@@ -27,7 +27,7 @@ describe('ZTranslator', function(){
       // Set up the httpBackend for the zombify api.
       $httpBackend
       .when('GET', baseUrlRe)
-        .respond(function(method, url) {
+        .respond(function() {
           return [200, {message: mockTrData}];
       });
     });
@@ -57,7 +57,7 @@ describe('ZTranslator', function(){
   it("should translate to non-empty string for non-empty string input.", function () {
     var id = 5;
     var testString = "Hello";
-    ZTranslator.zombify(testString)
+    ZTranslator.zombify(testString, id)
     .then (function (data) {
       expect(data.result.length).toBeGreaterThan(0);
     });
@@ -69,14 +69,14 @@ describe('ZTranslator', function(){
 
     // Register expectation of $http with 'GET' and specified URL
     $httpBackend.expect("GET", baseUrl+testString);
-    ZTranslator.zombify("Hello");
+    ZTranslator.zombify(testString, id);
     $httpBackend.flush();
   });
 
   it("should return valid zombified string for valid string input.", function () {
     var id = 5;
     var testString = "Hello";
-    ZTranslator.zombify("Hello", id).then(function (data) {
+    ZTranslator.zombify(testString, id).then(function (data) {
       expect(data.result).toMatch(mockTrData);
       expect(data.index).toBe(id);
     });
