@@ -1,4 +1,7 @@
 describe('ZTranslator', function(){
+  var module = angular.mock.module;
+  var inject = angular.mock.inject;
+
   var ZTranslator;
   var $httpBackend, $rootScope;
 
@@ -7,10 +10,10 @@ describe('ZTranslator', function(){
   var mockTrData = "DRRrrRrvrr";
 
   beforeEach(function () {
-    angular.mock.module('DRRrrRrvrr');
+    module('DRRrrRrvrr');
 
     // anonymous module to mock services...
-    angular.mock.module(function ($provide) {
+    module(function ($provide) {
       // mock runAuthorization service to skip run block
       $provide.service('runAuthorization', function () {
         this.run = function () {
@@ -18,7 +21,7 @@ describe('ZTranslator', function(){
       });
     });
 
-    angular.mock.inject (function ($injector, _$rootScope_) {
+    inject (function ($injector, _$rootScope_) {
       $rootScope = _$rootScope_;
 
       ZTranslator = $injector.get('ZTranslator');

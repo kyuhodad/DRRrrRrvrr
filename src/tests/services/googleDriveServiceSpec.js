@@ -1,4 +1,7 @@
 describe('GoogleDriveService', function(){
+  var module = angular.mock.module;
+  var inject = angular.mock.inject;
+
   var GoogleDriveService, OAuthService;
   var gapiMock, $httpBackend, $rootScope;
 
@@ -32,10 +35,10 @@ describe('GoogleDriveService', function(){
   var mockFilesGetFn = new mockFilesGetObj ();
 
   beforeEach(function () {
-    angular.mock.module('DRRrrRrvrr');
+    module('DRRrrRrvrr');
 
     // anonymous module to mock services...
-    angular.mock.module(function ($provide) {
+    module(function ($provide) {
       // mock gapi.auth.authorize service.
       $provide.service('gapi', function () {
         var svc = this;
@@ -82,7 +85,7 @@ describe('GoogleDriveService', function(){
       });
     });
 
-    angular.mock.inject (function ($injector, _$rootScope_) {
+    inject (function ($injector, _$rootScope_) {
       $rootScope = _$rootScope_;
 
       GoogleDriveService = $injector.get('GoogleDriveService');

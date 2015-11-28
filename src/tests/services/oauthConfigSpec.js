@@ -1,10 +1,13 @@
 describe('OAuthConfig Value', function(){
+  var module = angular.mock.module;
+  var inject = angular.mock.inject;
+
   var OAuthConfig;
 
   beforeEach(function () {
-    angular.mock.module('DRRrrRrvrr');
+    module('DRRrrRrvrr');
 
-    angular.mock.inject (function ($injector) {
+    inject (function ($injector) {
       OAuthConfig = $injector.get('OAuthConfig');
     });
   });

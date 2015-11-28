@@ -1,8 +1,9 @@
 describe('AuthController', function(){
-  var AuthController, OAuthService;
-  var $location;
   var module = angular.mock.module;
   var inject = angular.mock.inject;
+
+  var AuthController, OAuthService;
+  var $location;
 
   beforeEach(function () {
     module('DRRrrRrvrr');

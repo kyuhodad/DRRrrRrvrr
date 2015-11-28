@@ -1,11 +1,14 @@
 describe('OAuthService', function(){
+  var module = angular.mock.module;
+  var inject = angular.mock.inject;
+
   var OAuthService, OAuthConfig, gapiMock;
   var $rootScope, $interval;
 
   beforeEach(function () {
-    angular.mock.module('DRRrrRrvrr');
+    module('DRRrrRrvrr');
 
-    angular.mock.module(['$provide', function ($provide) {
+    module(['$provide', function ($provide) {
       // mock gapi.auth.authorize service.
       $provide.service('gapi', function () {
         this.auth = {
@@ -28,7 +31,7 @@ describe('OAuthService', function(){
       });
     }]);
 
-    angular.mock.inject (function ($injector, _$rootScope_, _$interval_) {
+    inject (function ($injector, _$rootScope_, _$interval_) {
       $rootScope = _$rootScope_;
       $interval = _$interval_;
       OAuthService = $injector.get('OAuthService');

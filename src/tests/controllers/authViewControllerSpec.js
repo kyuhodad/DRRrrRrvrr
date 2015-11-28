@@ -1,8 +1,8 @@
 describe('AuthViewController', function(){
-  var AuthViewController, OAuthService;
-  var $location;
   var module = angular.mock.module;
   var inject = angular.mock.inject;
+
+  var AuthViewController, OAuthService;
 
   beforeEach(function () {
     module('DRRrrRrvrr');
@@ -20,8 +20,7 @@ describe('AuthViewController', function(){
       });
     }]);
 
-    inject (function ($injector, $rootScope, $controller, _$location_) {
-      $location = _$location_;
+    inject (function ($injector, $rootScope, $controller) {
       AuthViewController = $controller('AuthViewController', {$scope: $rootScope.$new()});
       OAuthService = $injector.get('OAuthService');
     });
