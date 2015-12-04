@@ -3,11 +3,11 @@
 
 This project provides 3 view, and each view except for the Authorization view displays the contents in English and Zombified language.
 
-  - **Authorization View**: It is a transient view showing the progress of authorization. On starting the web page, this view is automatically showing, and tries to get the authorization for the Google Drive API. If the authorization is granted, it activates the document list view. Otherwise, it shows an error message with a button to re-try.
+  - **Authorization View** (`/#/auth`): It is a transient view showing the progress of authorization. On starting the web page, this view is automatically showing, and tries to get the authorization for the Google Drive API. If the authorization is granted, it activates the document list view. Otherwise, it shows an error message with a button to re-try.
 
-  - **Document List View**: It shows the list of documents from the Google Drive. Each items of the list has the link to get the document contents so that it can move into Document Content View by selecting one of the document list items. The document list is shown in two languages, English and Zombie.
+  - **Document List View**(`/#/list`): It shows the list of documents from the Google Drive. Each items of the list has the link to get the document contents so that it can move into Document Content View by selecting one of the document list items. The document list is shown in two languages, English and Zombie.
 
-  - **Document Contents View**: It shows the contents of selected document from the Document List View. It , also, shows the contents in English and Zombie. There is a button to go back to the Document List View.
+  - **Document Contents View**(`/#/doc`): It shows the contents of selected document from the Document List View. It , also, shows the contents in English and Zombie. There is a button to go back to the Document List View.
 
 ### Installation
 After downloading the project, run followings to install development environment.
@@ -25,9 +25,12 @@ After installing all the components, run `gulp build` to build distribution fold
   - `gulp connect`: Set up local host with 8080 port. The web page is, automatically, reloaded when a certain change happens.
 
 ### Notes for the implementations
-- **Angular module config and run block**:
+- **Angular module config and run block** (`src/js/app.js`):
+  - `config` block: Configures three views(`/auth`, `/list`, and `/doc`) where `/list` view is the default.
+  - `run` block: Sets the view to `/auth` and kicks into the mode checking for Google API authorization on starting the page. If it gets authorized, it moves to `/list` view, unless stays in `/auth` view with error message.
 
-- **authGapi directive** (`authGapi`):
+
+- **authGapi directive** (`authGapi`): Directive showing a button to request Google API authorization. It provides `title` (string title), `label` (label on authorization button), and `on-success` (callback on success) attributes.
 
 - **OAuth Service** (`OAuthService`):
 
