@@ -32,22 +32,22 @@ After installing all the components, run `gulp build` to build distribution fold
 
 - **authGapi directive** (`authGapi`): Directive showing a button to request Google API authorization. It provides `title` (string title), `label` (label on authorization button), and `on-success` (callback on success) attributes.
 
-- **OAuth Service** (`OAuthService`):
-
-- **Google Drive Service** (`GoogleDriveService`):
-
-- **Using $q service**:
-
-- **Test for promise, http, and interval service**:
-
-### How to mock promise
-- When a function which returns promise, $rootScope.$apply() needs to get called to do the unit test.
-
-- For http, $httpBackend.flush() needs.
-- For interval, $interval for mock should be instantiated, and call $interval.flush(10000);
+- **OAuth Service** (`OAuthService`): Service to get authorization for the Google API. It provides a function (`OAuthService.checkAuth`) and uses `OAuthConfig` value service to get CLIENT_ID and SCOPES. The authorization status can be retrieved by `OAuthService.status`.
+  - `OAuthService.checkAuth` gets two parameters, the number of maximum tries and the delay for each tries. Also, it returns a promise by using angular `$q` service.
+  - `OAuthService.status`:
+    - `-2`: Fail to get authorization
+    - `-1`: Initial state
+    - ` 0`: On trying to get authorization.
+    - ` 1`: Successfully authorized.
 
 
-### gapi should be registered to global(window)
+- **Google Drive Service** (`GoogleDriveService`): Service to get the document list and document data from Google Drive by using `gapi.client.drive.files` API.
+  - `getFileList` gets the list of documents from Google Drive. It returns a promise by using `$q` service. Once the list is retrieved, it is saved into `GoogleDriveService.files` variable.
+  - `getFile` gets the contents of selected document by an index of `GoogleDriveService.files`. Once the contents are received, those are split at each line break, and saved into `GoogleDriveService.splitFileData`. In this way, the file can be displayed with better formatting.
+
+- **Using $q service**: Most of the services which work asynchronously return `$q.promise` instead of passing callback function.
+
+- **Test for promise, http, and interval service**: To test the codes which use promise, `$apply()` needs to get called. Similarly, `$httpBackend.flush()` and `$interval.flush()` need to get called for testing `$http` and `$interval`.
 
 ### Code structure
 ```
