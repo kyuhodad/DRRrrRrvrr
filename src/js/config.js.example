@@ -1,2 +1,0 @@
-var CLIENT_ID = '<your client id>';
-var SCOPES = ['https://www.googleapis.com/auth/drive.readonly'];
