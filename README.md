@@ -32,7 +32,7 @@ After installing all the components, run `gulp build` to build distribution fold
 
 - **authGapi directive** (`authGapi`): Directive showing a button to request Google API authorization. It provides `title` (string title), `label` (label on authorization button), and `on-success` (callback on success) attributes.
 
-- **OAuth Service** (`OAuthService`): Service to get authorization for the Google API. It provides a function (`OAuthService.checkAuth`) and uses `OAuthConfig` value service to get CLIENT_ID and SCOPES. The authorization status can be retrieved by `OAuthService.status`.
+- **OAuth Service** (`OAuthService`): Service to get authorization for the Google API. It provides a function (`OAuthService.checkAuth`) and uses `OAuthConfig` value service to get CLIENT_ID and SCOPES. The authorization status can be retrieved by `OAuthService.status`. (**NOTE**: CLIENT_ID in `OAuthConfig` is not valid one. Please, set `OAuthConfig.CLIENT_ID` to your own valid one for testing.)
   - `OAuthService.checkAuth` gets two parameters, the number of maximum tries and the delay for each tries. Also, it returns a promise by using angular `$q` service.
   - `OAuthService.status`:
     - `-2`: Fail to get authorization
