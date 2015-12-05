@@ -1,5 +1,5 @@
 {
-  "name": "fizzbuzzer",
+  "name": "DRRrrRrvrr",
   "version": "1.0.0",
   "description": "",
   "main": "karma.conf.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/CSCI-E32/Week-7.git"
+    "url": "https://github.com/kyuhodad/DRRrrRrvrr.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CSCI-E32/Week-7/issues"
+    "url": "https://github.com/kyuhodad/DRRrrRrvrr"
   },
-  "homepage": "https://github.com/CSCI-E32/Week-7",
+  "homepage": "https://github.com/kyuhodad/DRRrrRrvrr",
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
